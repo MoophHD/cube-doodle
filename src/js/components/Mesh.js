@@ -21,7 +21,13 @@ class Mesh {
     }
 
     init(scene) {
-        console.log(scene.add);
+        let wireframe = new THREE.LineSegments( 
+            new THREE.EdgesGeometry( this._mesh.geometry ),
+            new THREE.LineBasicMaterial( { color: 0x333333, linewidth: 3, transparent:true, opacity: .5} )
+        );
+
+        this._mesh.add(wireframe);
+
         scene.add(this._mesh)
     }
 
