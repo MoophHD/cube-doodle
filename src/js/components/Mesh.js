@@ -12,6 +12,8 @@ class Mesh {
         this._pos = pos;
         this._rot = rot;
 
+        
+
         this._mat = new THREE.MeshBasicMaterial({
             color: 0xfffffff,
             polygonOffset: true,

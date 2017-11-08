@@ -14,6 +14,11 @@ class AbstractApplication {
         this._renderer = new THREE.WebGLRenderer();
         this._renderer.setPixelRatio( window.devicePixelRatio );
         this._renderer.setSize( window.innerWidth, window.innerHeight );
+        // this._renderer.shadowMap.enabled = true;
+        // this._renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+
+
         document.body.appendChild( this._renderer.domElement );
 
         this._controls = new THREE.OrbitControls( this._camera, this._renderer.domElement );
