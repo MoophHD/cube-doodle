@@ -56,10 +56,11 @@ class AbstractApplication {
 
     }
 
-    animate(timestamp) {
+    animate(timestamp, cb) {
         requestAnimationFrame( this.animate.bind(this) );
+        
+        if (cb) cb();
 
-        //this._controls.update();
         this._renderer.render( this._scene, this._camera );
 
     }

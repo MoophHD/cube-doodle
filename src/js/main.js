@@ -13,12 +13,13 @@ class Main extends AbstractApplication {
         super();
         this.MAX_CUBES = 10;
 
-        this._renderer.setClearColor(0xEAA5A5, 1) 
+        this._renderer.setClearColor(0xffffff, 1) 
 
-        var geometry = new THREE.BoxGeometry( 200, 200, 200 );
+        var geometry = new THREE.BoxGeometry( 250, 250, 250 );
         let material = new THREE.MeshLambertMaterial({
-            color: 0xfffffff,
+            color: 0xffffff,
             emissive: 0x072534,
+            emissiveIntensity: .5
             // side: THREE.DoubleSide,
             // polygonOffset: true,
             // polygonOffsetFactor: 1,
@@ -27,8 +28,26 @@ class Main extends AbstractApplication {
 
 
         this.mesh = new THREE.Mesh( geometry, material );
-        this.mesh.receiveShadow = true;
+        this.mesh.position.z = -500;
+        this.mesh.position.x = -100;
+        
         this.scene.add( this.mesh );
+
+
+
+        var light = new THREE.AmbientLight(0xffffff, 0.5);
+        var light2 = new THREE.PointLight(0xffffff, 0.5);
+
+        this.scene.add(light);
+        this.scene.add(light2);
+
+        setInterval(() => {
+            this.mesh.rotation.x += 0.05;
+            this.mesh.rotation.y += 0.05;
+            // this.animate();
+        }, 24)
+
+        // this.animate();
 
         // var geo = new THREE.EdgesGeometry( this.mesh.geometry );
         // var mat = new THREE.LineBasicMaterial( { color: 0x333333, linewidth: 3 } );
@@ -47,11 +66,7 @@ class Main extends AbstractApplication {
         //     TWEEN.update(time);
         // }
 
-        let light1 = new THREE.AmbientLight(0xffffff, .5);
-        let light2 = new THREE.PointLight(0xffffff, .5);
 
-        this.scene.add( light1 );
-        this.scene.add( light2 );
 
 
         // let planeMat = new THREE.MeshLambertMaterial({
