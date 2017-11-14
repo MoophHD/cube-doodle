@@ -14,23 +14,24 @@ class Mesh {
 
         
 
-        this._mat = new THREE.MeshBasicMaterial({
-            color: 0xfffffff,
+        this._mat = new THREE.MeshLambertMaterial({
+            color: 0xffffff,
+            emissive: 0xffffff,
+            emissiveIntensity: .5,
             polygonOffset: true,
             polygonOffsetFactor: 1,
             polygonOffsetUnits: 1
-        });
+        })
     }
 
     init(scene) {
-        let wireframe = new THREE.LineSegments( 
-            new THREE.EdgesGeometry( this._mesh.geometry ),
-            new THREE.LineBasicMaterial( { color: 0x333333, linewidth: 3, transparent:true, opacity: .5} )
-        );
-
-        this._mesh.add(wireframe);
-
         scene.add(this._mesh)
+
+        var outlineMaterial = new THREE.MeshBasicMaterial( { color: 0x333333, side: THREE.BackSide } );
+        var outlineMesh = new THREE.Mesh( this.mesh.geometry, outlineMaterial );
+        outlineMesh.position.copy(this.mesh.position);
+        outlineMesh.scale.multiplyScalar(1.02);
+        scene.add( outlineMesh );
     }
 
     get pos() {
@@ -47,6 +48,10 @@ class Mesh {
 
     set rot(value) {
         this._mesh.position.copy(value);
+    }
+
+    get mesh() {
+        return this._mesh;
     }
 }
 

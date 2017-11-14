@@ -1,22 +1,27 @@
 /* eslint-disable */
 import 'three'
 import 'three/examples/js/controls/OrbitControls'
+import 'three/examples/js/renderers/CanvasRenderer'
+
 
 class AbstractApplication {
 
     constructor(){
-
-        this._camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 1000 );
-        this._camera.position.z = 400;
-
         this._scene = new THREE.Scene();
 
-        this._renderer = new THREE.WebGLRenderer();
+        this._camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 20000 );
+        this._camera.position.set(0, 150, 400);
+        this._camera.lookAt(this._scene.position);
+
+        this._renderer = new THREE.WebGLRenderer({antialias:true});
         this._renderer.setPixelRatio( window.devicePixelRatio );
         this._renderer.setSize( window.innerWidth, window.innerHeight );
         // this._renderer.shadowMap.enabled = true;
         // this._renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
+        // setInterval(() => {
+        //     console.log(this._camera.position)
+        // }, 500)
 
 
         document.body.appendChild( this._renderer.domElement );
@@ -46,6 +51,10 @@ class AbstractApplication {
 
     }
 
+    get controls() {
+        return this._controls;
+    }
+
 
     onWindowResize() {
 
@@ -56,11 +65,9 @@ class AbstractApplication {
 
     }
 
-    animate(timestamp, cb) {
+    animate(timestamp) {
         requestAnimationFrame( this.animate.bind(this) );
         
-        if (cb) cb();
-
         this._renderer.render( this._scene, this._camera );
 
     }
