@@ -3,9 +3,7 @@ import * as THREE from 'three'
 
 import AbstractApplication from 'views/AbstractApplication'
 
-import CubicMesh from './components/CubicMesh'
-import CylinderMesh from './components/CylinderMesh'
-import getRandomInt from './gist/getRandomInt'
+import MeshMap from './containers/MeshMap'
 
 
 class Main extends AbstractApplication {
@@ -73,8 +71,6 @@ class Main extends AbstractApplication {
 
         for (let i = 0; i < MAX_Y+1; i++) {
             localGeo = lineGeo.clone();
-            console.log(`from x ${xPos}, y ${-HEIGHT/2}`);
-            console.log(`to x ${xPos}, y ${HEIGHT/2}`);
             localGeo.vertices.push(new THREE.Vector3(xPos, -HEIGHT/2, zPos));
             localGeo.vertices.push(new THREE.Vector3(xPos, HEIGHT/2, zPos));
             plane.add(new THREE.Line(localGeo, lineMat));
@@ -116,34 +112,46 @@ class Main extends AbstractApplication {
         // }
 
         this.animate();
+
+        const CELLS_X = 25;
+        const CELLS_Z = 25;
+
+        let meshMap = new MeshMap(CELLS_X,CELLS_Z, HEIGHT, this.scene);
+        meshMap.gen();
+
+        this._meshMap = meshMap;
     }
 
     spawn() {
-
-        let cube, cylinder, pos, rot, height, width, depth, radius;
-        for (let i = 0; i<1; i++) { // i < this.MAX_CUBES
-            height = getRandomInt(200, 200);
-            width = getRandomInt(200, 200);
-            depth = getRandomInt(200, 200);
-            
-            pos = new THREE.Vector3(getRandomInt(400, 1000), height/2, getRandomInt(-500, 500));
-            rot = new THREE.Quaternion();
-
-            cube = new CubicMesh(pos, rot, height, width, depth);
-            cube.init(this.scene);
-        }
-
-        for (let i = 0; i<1; i++) { // i < this.MAX_CUBES
-            height = getRandomInt(300, 300);
-            radius = getRandomInt(75, 75);
-            
-            pos = new THREE.Vector3(getRandomInt(400, 1000), height/2, getRandomInt(-500, 500));
-            rot = new THREE.Quaternion();
-
-            cylinder = new CylinderMesh(pos, rot, height, radius);
-            cylinder.init(this.scene);
-        }
+        this._meshMap.gen();
     }
+
+    // spawn() {
+
+    //     let cube, cylinder, pos, rot, height, width, depth, radius;
+    //     for (let i = 0; i<1; i++) { // i < this.MAX_CUBES
+    //         height = getRandomInt(200, 200);
+    //         width = getRandomInt(200, 200);
+    //         depth = getRandomInt(200, 200);
+            
+    //         pos = new THREE.Vector3(getRandomInt(400, 1000), height/2, getRandomInt(-500, 500));
+    //         rot = new THREE.Quaternion();
+
+    //         cube = new CubicMesh(pos, rot, height, width, depth);
+    //         cube.init(this.scene);
+    //     }
+
+    //     for (let i = 0; i<1; i++) { // i < this.MAX_CUBES
+    //         height = getRandomInt(300, 300);
+    //         radius = getRandomInt(75, 75);
+            
+    //         pos = new THREE.Vector3(getRandomInt(400, 1000), height/2, getRandomInt(-500, 500));
+    //         rot = new THREE.Quaternion();
+
+    //         cylinder = new CylinderMesh(pos, rot, height, radius);
+    //         cylinder.init(this.scene);
+    //     }
+    // }
 
     checkCollision(obj) {
         for (var vertexIndex = 0; vertexIndex < obj.geometry.vertices.length; vertexIndex++)
@@ -152,7 +160,7 @@ class Main extends AbstractApplication {
             var globalVertex = obj.matrix.multiplyVector3(localVertex);
             var directionVector = globalVertex.subSelf( obj.position );
         
-            var ray = new THREE.Ray( obj.position, directionVector.clone().normalize() ); // eslint-ignore-line
+            var ray = new THREE.Ray( obj.position, directionVector.clone().normalize() ); // eslint-disable-line
             // var collisionResults = ray.intersectObjects( collidableMeshList );
             // if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() ) 
             // {
