@@ -9,7 +9,8 @@ class CubicMesh extends Mesh{
      */
     constructor(pos, rot, height, width, depth) {
         super(pos, rot)
-        this._geo = new THREE.BoxGeometry(height, width, depth)
+        this._geo = new THREE.BoxGeometry(width, height, depth)
+        new THREE.BoxGeometry()
 
         this._mesh = new THREE.Mesh( this._geo, this._mat );
         this._mesh.quaternion.copy(rot);

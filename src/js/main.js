@@ -8,26 +8,17 @@ import MeshMap from './containers/MeshMap'
 
 class Main extends AbstractApplication {
     constructor(){
-
         super();
-        this.MAX_CUBES = 10;
-
         this._renderer.setClearColor(0xffffff, 1) 
 
-        var geometry = new THREE.BoxGeometry( 80, 80, 80 );
-        let material = new THREE.MeshLambertMaterial({
-            color: 0xffffff,
-            emissive: 0xffffff,
-            emissiveIntensity: .5,
-            polygonOffset: true,
-            polygonOffsetFactor: 1,
-            polygonOffsetUnits: 1
-        })
-
-        //MESH
-        this.mesh = new THREE.Mesh( geometry, material );
-        
-        this.scene.add( this.mesh );
+        // let material = new THREE.MeshLambertMaterial({
+        //     color: 0xffffff,
+        //     emissive: 0xffffff,
+        //     emissiveIntensity: .5,
+        //     polygonOffset: true,
+        //     polygonOffsetFactor: 1,
+        //     polygonOffsetUnits: 1
+        // })
 
         //PLANE
         const HEIGHT = 10000;
@@ -42,7 +33,7 @@ class Main extends AbstractApplication {
         var planeGeo = new THREE.PlaneGeometry(WIDTH, HEIGHT, 100, 100);
         var plane = new THREE.Mesh(planeGeo, planeMat);
         plane.rotation.x = -90 * Math.PI / 180;
-        plane.position.y = -40;
+        plane.position.y = 0;
         
         this.scene.add(plane);
 
@@ -53,7 +44,7 @@ class Main extends AbstractApplication {
         const Y_GAP = HEIGHT/MAX_Y;
         
         let lineMat = new THREE.LineBasicMaterial( { 
-            color: 0xff0000,
+            color: 0xDC143C,
             linewidth: 1
          } );
         let lineGeo = new THREE.Geometry();
@@ -87,9 +78,6 @@ class Main extends AbstractApplication {
             yPos += Y_GAP;
         }
 
-        console.log(this.scene);
-
-
         //LIGHT 
         var light2 = new THREE.DirectionalLight(0xffffff, 0.6);
         light2.position.copy(this.camera.position);
@@ -112,9 +100,10 @@ class Main extends AbstractApplication {
         // }
 
         this.animate();
-
-        const CELLS_X = 25;
-        const CELLS_Z = 25;
+        
+        //GEN SETTINGS
+        const CELLS_X = 10;
+        const CELLS_Z = 10;
 
         let meshMap = new MeshMap(CELLS_X,CELLS_Z, HEIGHT, this.scene);
         meshMap.gen();
@@ -125,33 +114,6 @@ class Main extends AbstractApplication {
     spawn() {
         this._meshMap.gen();
     }
-
-    // spawn() {
-
-    //     let cube, cylinder, pos, rot, height, width, depth, radius;
-    //     for (let i = 0; i<1; i++) { // i < this.MAX_CUBES
-    //         height = getRandomInt(200, 200);
-    //         width = getRandomInt(200, 200);
-    //         depth = getRandomInt(200, 200);
-            
-    //         pos = new THREE.Vector3(getRandomInt(400, 1000), height/2, getRandomInt(-500, 500));
-    //         rot = new THREE.Quaternion();
-
-    //         cube = new CubicMesh(pos, rot, height, width, depth);
-    //         cube.init(this.scene);
-    //     }
-
-    //     for (let i = 0; i<1; i++) { // i < this.MAX_CUBES
-    //         height = getRandomInt(300, 300);
-    //         radius = getRandomInt(75, 75);
-            
-    //         pos = new THREE.Vector3(getRandomInt(400, 1000), height/2, getRandomInt(-500, 500));
-    //         rot = new THREE.Quaternion();
-
-    //         cylinder = new CylinderMesh(pos, rot, height, radius);
-    //         cylinder.init(this.scene);
-    //     }
-    // }
 
     checkCollision(obj) {
         for (var vertexIndex = 0; vertexIndex < obj.geometry.vertices.length; vertexIndex++)

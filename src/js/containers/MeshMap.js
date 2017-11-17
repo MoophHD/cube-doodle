@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 
 import CubicMesh from '../components/CubicMesh'
-// import CylinderMesh from '../components/CylinderMesh'
+import CylinderMesh from '../components/CylinderMesh'
 
 import roll from '../gist/roll'
 import converTwoDArray from '../gist/converTwoDArray'
@@ -22,7 +22,7 @@ class MeshMap {
 
         let group = new THREE.Group();
         group.position.x = group.position.z = -planeSide/2 + this.cellSide/2;
-        group.position.y = this.cellSide/2;
+        group.position.y = 0 //this.cellSide/2-31;
         scene.add(group);
 
         this.group = group;
@@ -30,6 +30,7 @@ class MeshMap {
 
     gen() {
         this.genMap();
+        this.fillMap();
         this.init();
     }
 
@@ -37,8 +38,6 @@ class MeshMap {
         const CELLS_X = this._cellsX;
         const CELLS_Z = this._cellsZ;
 
-        const CUBES_COUNT = roll(10,15);
-        // const CYLINDERS_COUNT = roll(1,5);
 
         let space = [];
 
@@ -46,14 +45,21 @@ class MeshMap {
             space[i] = new Array(CELLS_Z);
         }
         this.space = space;
+    }
+
+    fillMap() {
+        // const CUBES_COUNT = roll(10,15);
+        const CYLINDERS_COUNT = roll(1,5);
+        const CUBES_COUNT = 100;
 
         for (let j = 0; j < CUBES_COUNT; j++) {
             this.setFigure(this.Figures.CUBE);
         }
-        
+
+        for (let j = 0; j < CYLINDERS_COUNT; j++) {
+            this.setFigure(this.Figures.CYLINDER);
+        }
     }
-
-
 
     setFigure(type) {
         let x = roll(0, this._cellsX-1);
@@ -66,11 +72,9 @@ class MeshMap {
         let cellInfo = {type:type, x:x*side, z:z*side};
 
         if (type == this.Figures.CUBE) {
-            cellInfo = Object.assign(cellInfo, {h:side, w:side, d:side})
-            // cellInfo = {...cellInfo, h:side, w:side, d:side}
+            cellInfo = Object.assign(cellInfo, {h:side*2, w:side, d:side})
         } else if (type == this.Figures.CYLINDER) {
-            cellInfo = Object.create(cellInfo, {h:side, r:side})
-            // cellInfo = {...cellInfo, h:side, r: side}
+            cellInfo = Object.assign(cellInfo, {h:side, r:side/4})
         }
 
         if (cell) {
@@ -81,8 +85,9 @@ class MeshMap {
     }
 
     init() {
+        // console.log(this.space);
         let plane = converTwoDArray(this.space);
-
+        
         let pos, rot, figure;
         let lastCellY = 0;
 
@@ -94,9 +99,14 @@ class MeshMap {
                 
                 if (cellEl.type == this.Figures.CUBE) {
                     figure = new CubicMesh(pos, rot, cellEl.h, cellEl.w, cellEl.d);
+                } else if (cellEl.type == this.Figures.CYLINDER) {
+                    figure = new CylinderMesh(pos, rot, cellEl.h, cellEl.r);
                 }
 
+                if (lastCellY !=0) { console.log(lastCellY); console.log(figure) }
+
                 lastCellY += cellEl.h;
+                figure.mesh.position.y += cellEl.h/2;
                 figure.init(this.group);
             });
         });
